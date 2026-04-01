@@ -41,4 +41,4 @@ echo "User 2: "
 check
 user2=$usr
 
-python3 game.py user1 user2
+python3 game.py "$user1" "$user2"
