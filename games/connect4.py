@@ -3,43 +3,25 @@ import sys
 import numpy as np
 from pathlib import Path
 
-pygame.init()
-screen = pygame.display.set_mode((800,800))
-pygame.display.set_caption("Connect4")
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from game import Game
 
-Hub = Path(__file__).resolve().parent.parent
-p1 = pygame.image.load(str(Hub / "Ref_Images/C4_Red.png")).convert_alpha()
-p1 = pygame.transform.scale(p1, (51, 55))
-p2 = pygame.image.load(str(Hub / "Ref_Images/C4_Blue.png")).convert_alpha()
-p2 = pygame.transform.scale(p2, (51, 55))
-
-bgi = pygame.image.load(str(Hub / "Ref_Images/C4_bg.png")).convert()
-bgi = pygame.transform.scale(bgi, screen.get_size())
-
-rect = []
-for i in range(7):
-    rect.append(pygame.Rect(156 + 76*i, 155, 52, 440))
-
-bgi1 = pygame.image.load(str(Hub / "Ref_Images/C4_bg_cutout.png")).convert_alpha()
-bgi1 = pygame.transform.scale(bgi1, screen.get_size())
-
-class Game :
+class Connect4(Game) :
     def __init__(self):
+        super().__init__()
         self.board = np.zeros((7,7), dtype = int)
-        self.player = 1
         self.x = self.yf = 0
         self.y = -55
         self.coin = None
         self.falling = False
         self.turn_i = None
         self.turn_j = None
-        self.last_player = None
 
     def turn(self):
         if self.falling:
             return
         for i in range(7):
-            if rect[i].collidepoint(pygame.mouse.get_pos()):
+            if self.rect[i].collidepoint(pygame.mouse.get_pos()):
                 for j in range(6, -1, -1):
                     if self.board[i][j] == 0:
                         self.x = 156 + 75.5*i
@@ -52,13 +34,13 @@ class Game :
                         if self.player == 1:
                             self.last_player = 1
                             self.player = 2
-                            self.coin = p1
+                            self.coin = self.pl1
                             break
 
                         else:
                             self.last_player = 2
                             self.player = 1
-                            self.coin = p2
+                            self.coin = self.pl2
                             break
                 return
         
@@ -66,6 +48,8 @@ class Game :
         b = self.board
         p = self.last_player
 
+        if p is None:
+            return 0
         if np.any((b[: ,:-3]==p) & (b[: ,1:-2]==p) & (b[: ,2:-1]==p) & (b[: ,3:]==p)): 
             return p        
         elif np.any((b[:-3, :]==p) & (b[1:-2, :]==p) & (b[2:-1, :]==p) & (b[3: , :]==p)):
@@ -77,41 +61,56 @@ class Game :
         else:
             return 0
 
-game = Game()
-clock = pygame.time.Clock()
+    def run(self):
+        self.initialisation("Connect4")
+        self.pl1 = pygame.image.load(str("Ref_Images/C4_Red.png")).convert_alpha()
+        self.pl1 = pygame.transform.scale(self.pl1, (51, 55))
+        self.pl2 = pygame.image.load(str("Ref_Images/C4_Blue.png")).convert_alpha()
+        self.pl2 = pygame.transform.scale(self.pl2, (51, 55))
+        self.bgi = pygame.image.load(str("Ref_Images/C4_bg.png")).convert()
+        self.bgi = pygame.transform.scale(self.bgi, self.screen.get_size())
+        self.bgi1 = pygame.image.load(str("Ref_Images/C4_bg_cutout.png")).convert_alpha()
+        self.bgi1 = pygame.transform.scale(self.bgi1, self.screen.get_size())
+        self.rect = []
+        for i in range(7):
+            self.rect.append(pygame.Rect(156 + 76*i, 155, 52, 440))
 
-while True:
-    screen.fill('black')
-    if game.falling:
-        game.y += 7.5
-        if game.y >= game.yf:
-            game.y = game.yf
-            game.falling = False
-            game.board[game.turn_i][game.turn_j] = game.last_player
-            game.turn_i = None
-            game.turn_j = None
+        clock = pygame.time.Clock()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+        while True:
+            self.screen.fill('black')
+            if self.falling:
+                self.y += 7.5
+                if self.y >= self.yf:
+                    self.y = self.yf
+                    self.falling = False
+                    self.board[self.turn_i][self.turn_j] = self.last_player
+                    if self.win() != 0:
+                        return self.win()
+                    self.turn_i = None
+                    self.turn_j = None
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if game.win() == 0 :
-                game.turn()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-    screen.blit(bgi, (0,0))
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.win() == 0 :
+                        self.turn()
 
-    if game.falling:
-        screen.blit(game.coin, (game.x, game.y))
+            self.screen.blit(self.bgi, (0,0))
 
-    for i in range(7):
-        for j in range(7):
-            if game.board[i][j] == 1 :
-                screen.blit(p1, (156 + 75.5*i, 158 + 64*j))
-            elif game.board[i][j] == 2 :
-                screen.blit(p2, (156 + 75.5*i, 158 + 64*j))
+            if self.falling:
+                self.screen.blit(self.coin, (self.x, self.y))
 
-    screen.blit(bgi1, (0,0))
-    pygame.display.update()
-    clock.tick(60)
+            for i in range(7):
+                for j in range(7):
+                    if self.board[i][j] == 1 :
+                        self.screen.blit(self.pl1, (156 + 75.5*i, 158 + 64*j))
+                    elif self.board[i][j] == 2 :
+                        self.screen.blit(self.pl2, (156 + 75.5*i, 158 + 64*j))
+
+            self.screen.blit(self.bgi1, (0,0))
+            pygame.display.update()
+            clock.tick(60)
