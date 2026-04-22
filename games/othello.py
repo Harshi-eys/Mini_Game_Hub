@@ -6,6 +6,7 @@ from pathlib import Path
 pygame.init()
 screen = pygame.display.set_mode((800,800))
 pygame.display.set_caption('Othello')
+font = pygame.font.SysFont("palatinolinotype", 40)
 
 Hub = Path(__file__).resolve().parent.parent
 bg = pygame.image.load(str(Hub / "Ref_Images/Oth_bg.png")).convert()
@@ -15,7 +16,9 @@ black = pygame.transform.scale(black, (60,60))
 white = pygame.image.load(str(Hub / "Ref_Images/Oth_White.png")).convert_alpha()
 white = pygame.transform.scale(white, (60,60))
 bg1 = pygame.image.load(str(Hub / "Ref_Images/Oth_cutout.png")).convert_alpha()
-bg1 = pygame.transform.scale(bg1, (535,400)) 
+bg1 = pygame.transform.scale(bg1, (535,400))
+banner = pygame.image.load(str(Hub / "Ref_Images/banner1.png")).convert_alpha()
+banner = pygame.transform.scale(banner, (400, 701))
 
 rect = []
 for i in range(8):
@@ -30,6 +33,7 @@ class Game:
         self.board[3][4] = 1
         self.board[4][3] = 1
         self.board[4][4] = 2
+        self.font = pygame.font.SysFont("Arial", 30)
 
     def turn(self):
         for i in range(64):
@@ -44,8 +48,7 @@ class Game:
 
                         if not self.any_valid(self.player):
                             self.player = 3 - self.player
-
-
+    
     def valid_flip(self, r, c, p, flip):
         valid = False
         opp = 3 - p
@@ -145,6 +148,23 @@ class Game:
             else:
                 return 0
         return -1
+    
+    def draw_turn_text(self):
+        if self.win() == 0:
+            banner_rect = banner.get_rect(topleft=(204, 434))
+            screen.blit(banner, banner_rect)
+            if (Game.win(self) != 0):
+                name = "Black" if self.player == 1 else "White"
+                text_content = f"{name}'s turn"   
+                if name == "Black" :
+                    text_surface = font.render(text_content, True, (51, 0, 0))
+                else:
+                    text_surface = font.render(text_content, True, (255, 255, 255))
+        else : 
+            name = Game.win(self)
+            text_content = f"{name} won"
+            text_surface = font.render(text_content, True, (0, 0, 0))
+            screen.blit(text_surface, (305, 734))
 
 game = Game()
 while True:
@@ -171,5 +191,6 @@ while True:
         elif game.board[i//8][i%8] == 2:
             screen.blit(white, rect[i])
     screen.blit(bg1, (275,-40))
+    game.draw_turn_text()
     pygame.display.update()
     

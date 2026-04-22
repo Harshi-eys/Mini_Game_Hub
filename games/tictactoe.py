@@ -6,6 +6,7 @@ from pathlib import Path
 pygame.init()
 screen = pygame.display.set_mode((800,800))
 pygame.display.set_caption("Tic Tac Toe")
+font = pygame.font.SysFont("palatinolinotype", 40)
 
 Hub = Path(__file__).resolve().parent.parent
 bg = pygame.image.load(str(Hub / "Ref_Images/TTT_bg.png")).convert()
@@ -14,6 +15,12 @@ X = pygame.image.load(str(Hub / "Ref_Images/TTT_X.png")).convert_alpha()
 X = pygame.transform.scale(X, (55, 55))
 O = pygame.image.load(str(Hub / "Ref_Images/TTT_O.png")).convert_alpha()
 O = pygame.transform.scale(O, (55, 55))
+banner = pygame.image.load(str(Hub / "Ref_Images/banner2.png")).convert_alpha()
+banner = pygame.transform.scale(banner, (250, 250))
+x_win = pygame.image.load(str(Hub / "Ref_Images/x_win1.png")).convert_alpha()
+x_win = pygame.transform.scale(x_win, (390, 437))
+o_win = pygame.image.load(str(Hub / "Ref_Images/o_win.png")).convert_alpha()
+o_win = pygame.transform.scale(o_win, (390, 437))
 
 rect =[]
 for i in range(10):
@@ -56,6 +63,15 @@ class Game:
             return p   
         else:
             return 0
+        
+    def draw_turn_text(self):
+        if self.win() == 0 :
+            name = "X" if self.player == 1 else "O"
+            text_content = f"{name}'s turn"   
+            banner_rect = banner.get_rect(topleft=(300, -100))
+            screen.blit(banner, banner_rect)
+            text_surface = font.render(text_content, True, (0, 0, 0))
+            screen.blit(text_surface, (358, 16))
 
 game = Game()
 while True:
@@ -76,4 +92,12 @@ while True:
             screen.blit(X, rect[i])
         elif game.board[i//10][i%10] == 2:
             screen.blit(O, rect[i])
+    game.draw_turn_text()
+
+    if game.win() != 0:
+        if game.last_player == 1 :       
+            screen.blit(x_win, (215,140))
+        else:
+            screen.blit(o_win, (215,140))
+
     pygame.display.update()
