@@ -2,8 +2,6 @@ import pygame
 import sys
 import numpy as np
 from pathlib import Path
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from game import Game
 
 class Othello(Game):
@@ -146,7 +144,7 @@ class Othello(Game):
                 self.rect.append(pygame.Rect(120 + 70.75*j, 145 + 65.5*i, 64.75, 61))
 
         while True:
-            self.screen.fill('black')
+            self.screen.blit(self.bg, (0,0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

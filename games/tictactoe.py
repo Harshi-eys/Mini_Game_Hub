@@ -2,8 +2,6 @@ import pygame
 import sys
 import numpy as np
 from pathlib import Path
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from game import Game
 
 class TicTacToe(Game):

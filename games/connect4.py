@@ -2,8 +2,6 @@ import pygame
 import sys
 import numpy as np
 from pathlib import Path
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from game import Game
 
 class Connect4(Game) :
@@ -78,7 +76,7 @@ class Connect4(Game) :
         clock = pygame.time.Clock()
 
         while True:
-            self.screen.fill('black')
+            self.screen.blit(self.bgi, (0,0))
             if self.falling:
                 self.y += 7.5
                 if self.y >= self.yf:

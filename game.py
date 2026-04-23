@@ -2,15 +2,17 @@ import pygame
 import sys 
 import numpy as np
 from pathlib import Path
+import subprocess
+import csv
 
 usr1 = sys.argv[1]
 usr2 = sys.argv[2]
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 pygame.init()
 pygame.display.set_caption("Connect4")
 screen = pygame.display.set_mode((800,800))
-Hub = Path(__file__).resolve().parent
-bg = pygame.image.load(str(Hub / "Ref_Images/game_bg.png")).convert()
+bg = pygame.image.load(str("Ref_Images/game_bg.png")).convert()
 bg = pygame.transform.scale(bg, screen.get_size())
 rect1 = pygame.Rect(260, 235, 300, 50)
 rect2 = pygame.Rect(260, 350, 250, 50)
@@ -49,18 +51,21 @@ def main():
                     from games.tictactoe import TicTacToe
                     game = TicTacToe()
                     game.run()
+                    subprocess.run(["sh", "leaderboard.sh"])
                     sys.exit()
 
                 elif rect2.collidepoint(pygame.mouse.get_pos()):
                     from games.othello import Othello
                     game = Othello()
                     game.run()
+                    subprocess.run(["sh", "leaderboard.sh"])
                     sys.exit()
                     
                 elif rect3.collidepoint(pygame.mouse.get_pos()):
                     from games.connect4 import Connect4
                     game = Connect4()
                     game.run()
+                    subprocess.run(["sh", "leaderboard.sh"])
                     sys.exit()
 
         pygame.display.update()
