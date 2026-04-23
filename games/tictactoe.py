@@ -17,10 +17,10 @@ O = pygame.image.load(str(Hub / "Ref_Images/TTT_O.png")).convert_alpha()
 O = pygame.transform.scale(O, (55, 55))
 banner = pygame.image.load(str(Hub / "Ref_Images/banner2.png")).convert_alpha()
 banner = pygame.transform.scale(banner, (250, 250))
-x_win = pygame.image.load(str(Hub / "Ref_Images/x_win1.png")).convert_alpha()
-x_win = pygame.transform.scale(x_win, (390, 437))
+x_win = pygame.image.load(str(Hub / "Ref_Images/x_win.png")).convert_alpha()
+x_win = pygame.transform.scale(x_win, (450, 485))
 o_win = pygame.image.load(str(Hub / "Ref_Images/o_win.png")).convert_alpha()
-o_win = pygame.transform.scale(o_win, (390, 437))
+o_win = pygame.transform.scale(o_win, (450, 485))
 
 rect =[]
 for i in range(10):
@@ -68,10 +68,10 @@ class Game:
         if self.win() == 0 :
             name = "X" if self.player == 1 else "O"
             text_content = f"{name}'s turn"   
-            banner_rect = banner.get_rect(topleft=(300, -100))
+            banner_rect = banner.get_rect(topleft=(275, -100))
             screen.blit(banner, banner_rect)
             text_surface = font.render(text_content, True, (0, 0, 0))
-            screen.blit(text_surface, (358, 16))
+            screen.blit(text_surface, (334, 16))
 
 game = Game()
 while True:
@@ -96,8 +96,7 @@ while True:
 
     if game.win() != 0:
         if game.last_player == 1 :       
-            screen.blit(x_win, (215,140))
+            screen.blit(x_win, (199,140))
         else:
-            screen.blit(o_win, (215,140))
-
+            screen.blit(o_win, (199,140))
     pygame.display.update()

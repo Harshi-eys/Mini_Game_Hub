@@ -17,8 +17,17 @@ white = pygame.image.load(str(Hub / "Ref_Images/Oth_White.png")).convert_alpha()
 white = pygame.transform.scale(white, (60,60))
 bg1 = pygame.image.load(str(Hub / "Ref_Images/Oth_cutout.png")).convert_alpha()
 bg1 = pygame.transform.scale(bg1, (535,400))
-banner = pygame.image.load(str(Hub / "Ref_Images/banner1.png")).convert_alpha()
-banner = pygame.transform.scale(banner, (400, 701))
+black_turn = pygame.image.load(str(Hub / "Ref_Images/black_turn.png")).convert_alpha()
+black_turn = pygame.transform.scale(black_turn, (248, 233))
+white_turn = pygame.image.load(str(Hub / "Ref_Images/white_turn.png")).convert_alpha()
+white_turn = pygame.transform.scale(white_turn, (248, 233))
+black_win = pygame.image.load(str(Hub / "Ref_Images/black_win.png")).convert_alpha()
+black_win = pygame.transform.scale(black_win, (450,484))
+white_win = pygame.image.load(str(Hub / "Ref_Images/white_win.png")).convert_alpha()
+white_win = pygame.transform.scale(white_win, (450,484))
+# draw = pygame.image.load(str(Hub / "Ref_Images/draw.png")).convert_alpha()
+# draw = pygame.transform.scale(draw, (535,400))
+
 
 rect = []
 for i in range(8):
@@ -142,29 +151,22 @@ class Game:
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
             if num_bla > num_whi:
+                screen.blit(black_win, (173,150))
                 return 1
             elif num_bla < num_whi:
+                screen.blit(white_win, (173,150))
                 return 2
             else:
+                # screen.blit(draw, (300,400))
                 return 0
         return -1
     
     def draw_turn_text(self):
-        if self.win() == 0:
-            banner_rect = banner.get_rect(topleft=(204, 434))
-            screen.blit(banner, banner_rect)
-            if (Game.win(self) != 0):
-                name = "Black" if self.player == 1 else "White"
-                text_content = f"{name}'s turn"   
-                if name == "Black" :
-                    text_surface = font.render(text_content, True, (51, 0, 0))
-                else:
-                    text_surface = font.render(text_content, True, (255, 255, 255))
-        else : 
-            name = Game.win(self)
-            text_content = f"{name} won"
-            text_surface = font.render(text_content, True, (0, 0, 0))
-            screen.blit(text_surface, (305, 734))
+        if self.win() == -1:
+            if self.player == 1 :
+                screen.blit(black_turn, (-5,-5))
+            if self.player == 2 :
+                screen.blit(white_turn, (-5,-6))
 
 game = Game()
 while True:
