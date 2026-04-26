@@ -1,43 +1,12 @@
 import pygame
 import sys
 import numpy as np
-from pathlib import Path
+from game import Game
 
-pygame.init()
-screen = pygame.display.set_mode((800,800))
-pygame.display.set_caption('Othello')
-font = pygame.font.SysFont("palatinolinotype", 40)
-
-Hub = Path(__file__).resolve().parent.parent
-bg = pygame.image.load(str(Hub / "Ref_Images/Oth_bg.png")).convert()
-bg = pygame.transform.scale(bg, screen.get_size())
-black = pygame.image.load(str(Hub / "Ref_Images/Oth_Black.png")).convert_alpha()
-black = pygame.transform.scale(black, (60,60))
-white = pygame.image.load(str(Hub / "Ref_Images/Oth_White.png")).convert_alpha()
-white = pygame.transform.scale(white, (60,60))
-bg1 = pygame.image.load(str(Hub / "Ref_Images/Oth_cutout.png")).convert_alpha()
-bg1 = pygame.transform.scale(bg1, (535,400))
-black_turn = pygame.image.load(str(Hub / "Ref_Images/black_turn.png")).convert_alpha()
-black_turn = pygame.transform.scale(black_turn, (248, 233))
-white_turn = pygame.image.load(str(Hub / "Ref_Images/white_turn.png")).convert_alpha()
-white_turn = pygame.transform.scale(white_turn, (248, 233))
-black_win = pygame.image.load(str(Hub / "Ref_Images/black_win.png")).convert_alpha()
-black_win = pygame.transform.scale(black_win, (450,484))
-white_win = pygame.image.load(str(Hub / "Ref_Images/white_win.png")).convert_alpha()
-white_win = pygame.transform.scale(white_win, (450,484))
-# draw = pygame.image.load(str(Hub / "Ref_Images/draw.png")).convert_alpha()
-# draw = pygame.transform.scale(draw, (535,400))
-
-
-rect = []
-for i in range(8):
-    for j in range(8):
-        rect.append(pygame.Rect(120 + 70.75*j, 145 + 65.5*i, 64.75, 61))
-
-class Game:
+class Othello(Game):
     def __init__(self):
+        super().__init__()
         self.board = np.zeros((8,8), dtype = int)
-        self.player = 1
         self.board[3][3] = 2
         self.board[3][4] = 1
         self.board[4][3] = 1
@@ -46,7 +15,7 @@ class Game:
 
     def turn(self):
         for i in range(64):
-            if rect[i].collidepoint(pygame.mouse.get_pos()):
+            if self.rect[i].collidepoint(pygame.mouse.get_pos()):
                 r = i//8
                 c = i%8
                 if self.board[r][c] == 0:
@@ -151,10 +120,10 @@ class Game:
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
             if num_bla > num_whi:
-                screen.blit(black_win, (173,150))
+                self.screen.blit(self.black_win, (173,150))
                 return 1
             elif num_bla < num_whi:
-                screen.blit(white_win, (173,150))
+                self.screen.blit(self.white_win, (173,150))
                 return 2
             else:
                 # screen.blit(draw, (300,400))
@@ -164,35 +133,54 @@ class Game:
     def draw_turn_text(self):
         if self.win() == -1:
             if self.player == 1 :
-                screen.blit(black_turn, (-5,-5))
+                self.screen.blit(self.black_turn, (-5,-5))
             if self.player == 2 :
-                screen.blit(white_turn, (-5,-6))
+                self.screen.blit(self.white_turn, (-5,-6))
 
-game = Game()
-while True:
-    screen.fill('Black')
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    def run(self):
+        self.initialisation("Othello")
+        self.font = pygame.font.SysFont("palatinolinotype", 40)
+        self.bg = pygame.image.load(str("Ref_Images/Oth_bg.png")).convert()
+        self.bg = pygame.transform.scale(self.bg, self.screen.get_size())
+        self.black = pygame.image.load(str("Ref_Images/Oth_Black.png")).convert_alpha()
+        self.black = pygame.transform.scale(self.black, (60,60))
+        self.white = pygame.image.load(str("Ref_Images/Oth_White.png")).convert_alpha()
+        self.white = pygame.transform.scale(self.white, (60,60))
+        self.bg1 = pygame.image.load(str("Ref_Images/Oth_cutout.png")).convert_alpha()
+        self.bg1 = pygame.transform.scale(self.bg1, (535,400))
+        self.black_turn = pygame.image.load(str("Ref_Images/black_turn.png")).convert_alpha()
+        self.black_turn = pygame.transform.scale(self.black_turn, (248, 233))
+        self.white_turn = pygame.image.load(str("Ref_Images/white_turn.png")).convert_alpha()
+        self.white_turn = pygame.transform.scale(self.white_turn, (248, 233))
+        self.black_win = pygame.image.load(str("Ref_Images/black_win.png")).convert_alpha()
+        self.black_win = pygame.transform.scale(self.black_win, (450,484))
+        self.white_win = pygame.image.load(str("Ref_Images/white_win.png")).convert_alpha()
+        self.white_win = pygame.transform.scale(self.white_win, (450,484)) 
+        # draw = pygame.image.load(str(Hub / "Ref_Images/draw.png")).convert_alpha()
+        # draw = pygame.transform.scale(draw, (535,400))
+        self.rect = []
+        for i in range(8):
+            for j in range(8):
+                self.rect.append(pygame.Rect(120 + 70.75*j, 145 + 65.5*i, 64.75, 61))
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if game.win() == -1:
-                game.turn()
-                if game.win() != -1:
-                    print(game.win())
-                    break
-            else:
-                print(game.win())
-                break
-    
-    screen.blit(bg, (0,0))
-    for i in range(64):
-        if game.board[i//8][i%8] == 1:
-            screen.blit(black, rect[i])
-        elif game.board[i//8][i%8] == 2:
-            screen.blit(white, rect[i])
-    screen.blit(bg1, (275,-40))
-    game.draw_turn_text()
-    pygame.display.update()
-    
+        while True:
+            self.screen.blit(self.bg, (0,0))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.win() == -1:
+                        self.turn()                      
+            
+            self.screen.blit(self.bg, (0,0))
+            for i in range(64):
+                if self.board[i//8][i%8] == 1:
+                    self.screen.blit(self.black, self.rect[i])
+                elif self.board[i//8][i%8] == 2:
+                    self.screen.blit(self.white, self.rect[i])
+            self.screen.blit(self.bg1, (275,-40))
+            self.draw_turn_text()
+            pygame.display.update()
+            
