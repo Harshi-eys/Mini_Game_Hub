@@ -78,7 +78,7 @@ class Othello(Game):
                     valid = True
                     break
         if r-1 >= 0 and c-1 >= 0 and self.board[r-1][c-1] == opp:
-            for i in range(2, min(r, c)):
+            for i in range(2, min(r+1, c+1)):
                 if self.board[r-i][c-i] == 0: break
                 if self.board[r-i][c-i] == p: 
                     if flip:
