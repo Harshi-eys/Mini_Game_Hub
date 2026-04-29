@@ -215,7 +215,7 @@ class Othello(Game):
                             music_on = True
                     if self.win() == -1:
                         self.turn()
-                    elif self.win() ==1 or self.win() ==2 or self.win() ==0:
+                    if self.win() ==1 or self.win() ==2 or self.win() ==0:
                         if self.stats_rect.collidepoint(pygame.mouse.get_pos()):
                             return self.win()
            

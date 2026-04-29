@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 usr1 = sys.argv[1]
 usr2 = sys.argv[2]
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+sys.path.append(str(Path(__file__).resolve().parent))
 
 pygame.init()
 pygame.mixer.init()
