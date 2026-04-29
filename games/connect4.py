@@ -90,21 +90,18 @@ class Connect4(Game) :
         self.red_win = pygame.transform.scale(self.red_win, (390, 437))
         self.blue_win = pygame.image.load(str("Ref_Images/blue_win.png")).convert_alpha()
         self.blue_win = pygame.transform.scale(self.blue_win, (390, 437))
+        self.stats = pygame.image.load(str("Ref_Images/stats.png")).convert_alpha()
+        self.stats = pygame.transform.scale(self.stats, (290, 180))
         self.dragon = pygame.image.load(str("Ref_Images/green_dragon.png")).convert_alpha()
         self.dragon = pygame.transform.scale(self.dragon, (220, 220))
         self.girl = pygame.image.load(str("Ref_Images/warrior_girl1.png")).convert_alpha()
         self.girl = pygame.transform.scale(self.girl, (95, 167))
-        self.replay = pygame.image.load(str("Ref_Images/replay.png")).convert_alpha()
-        self.replay = pygame.transform.scale(self.replay, (371, 250))
-        self.home = pygame.image.load(str("Ref_Images/home.png")).convert_alpha()
-        self.home = pygame.transform.scale(self.home, (371, 250))
-        self.replay_rect = pygame.Rect(357, 430, 70, 70)
-        self.home_rect = pygame.Rect(417, 430, 70, 70)
         self.music = pygame.image.load(str("Ref_Images/music.png")).convert_alpha()
         self.music = pygame.transform.scale(self.music, (500, 340))
         self.off_music = pygame.image.load(str("Ref_Images/off_music.png")).convert_alpha()
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
+        self.stats_rect = pygame.Rect(293, 550, 235, 146)
         self.rect = []
         music_on = True
         for i in range(7):
@@ -159,23 +156,18 @@ class Connect4(Game) :
             else:
                 self.screen.blit(self.off_music, (727, 1.5))
             
+            self.screen.blit(self.dragon, (551,445))
+            self.screen.blit(self.girl, (425,530))
+
             if self.win() != 0:
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    #replay
-                    if self.replay_rect.collidepoint(pygame.mouse.get_pos()):
-                        return "replay"
-                    #home
-                    if self.home_rect.collidepoint(pygame.mouse.get_pos()):
-                        return "home"
+                    if self.stats_rect.collidepoint(pygame.mouse.get_pos()):
+                        return self.win()
                 if self.last_player == 1 :       
                     self.screen.blit(self.red_win, (215,140))
                 else:
                     self.screen.blit(self.blue_win, (215,140))
-                self.screen.blit(self.replay, (357,430))
-                self.screen.blit(self.home, (417,430))
-
-            self.screen.blit(self.dragon, (551,445))
-            self.screen.blit(self.girl, (425,530))
+                self.screen.blit(self.stats, (293,550))
 
             pygame.display.update()
             clock.tick(60)

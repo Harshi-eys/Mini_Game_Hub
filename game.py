@@ -19,8 +19,6 @@ pygame.mixer.music.play(-1)
 
 menu = pygame.image.load(str("Ref_Images/game_bg.png")).convert()
 menu = pygame.transform.scale(menu, screen.get_size())
-settings = pygame.image.load(str("Ref_Images/settings.png")).convert_alpha()
-settings = pygame.transform.scale(settings, (500, 340))
 music = pygame.image.load(str("Ref_Images/music.png")).convert_alpha()
 music = pygame.transform.scale(music, (500, 340))
 off_music = pygame.image.load(str("Ref_Images/off_music.png")).convert_alpha()
@@ -74,39 +72,24 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if rect1.collidepoint(pygame.mouse.get_pos()):
                     from games.tictactoe import TicTacToe
-                    replaying = True
-                    while replaying:
-                        game = TicTacToe()
-                        result = game.run()
-                        if result == "replay" : 
-                            pass
-                        elif result == "home" : 
-                            replaying = False
+                    game = TicTacToe()
+                    game.run()
                     #subprocess.run(["sh", "leaderboard.sh"])
+                    sys.exit()
 
                 elif rect2.collidepoint(pygame.mouse.get_pos()):
                     from games.othello import Othello
-                    replaying = True
-                    while replaying:
-                        game = Othello()
-                        result = game.run()
-                        if result == "replay" : 
-                            pass
-                        elif result == "home" : 
-                            replaying = False
+                    game = Othello()
+                    game.run()
                     #subprocess.run(["sh", "leaderboard.sh"])
+                    sys.exit()
                     
                 elif rect3.collidepoint(pygame.mouse.get_pos()):
                     from games.connect4 import Connect4
-                    replaying = True
-                    while replaying:
-                        game = Connect4()
-                        result = game.run()
-                        if result == "replay" : 
-                            pass
-                        elif result == "home" : 
-                            replaying = False
+                    game = Connect4()
+                    game.run()
                     #subprocess.run(["sh", "leaderboard.sh"])
+                    sys.exit()
         
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if music_rect.collidepoint(pygame.mouse.get_pos()):

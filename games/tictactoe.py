@@ -60,17 +60,14 @@ class TicTacToe(Game):
         self.x_win = pygame.transform.scale(self.x_win, (450, 485))
         self.o_win = pygame.image.load(str("Ref_Images/o_win.png")).convert_alpha()
         self.o_win = pygame.transform.scale(self.o_win, (450, 485))
-        self.replay = pygame.image.load(str("Ref_Images/replay.png")).convert_alpha()
-        self.replay = pygame.transform.scale(self.replay, (371, 250))
-        self.home = pygame.image.load(str("Ref_Images/home.png")).convert_alpha()
-        self.home = pygame.transform.scale(self.home, (371, 250))
-        self.replay_rect = pygame.Rect(347, 470, 70, 70)
-        self.home_rect = pygame.Rect(407, 470, 70, 70)
+        self.stats = pygame.image.load(str("Ref_Images/stats.png")).convert_alpha()
+        self.stats = pygame.transform.scale(self.stats, (290, 180))
         self.music = pygame.image.load(str("Ref_Images/music.png")).convert_alpha()
         self.music = pygame.transform.scale(self.music, (500, 340))
         self.off_music = pygame.image.load(str("Ref_Images/off_music.png")).convert_alpha()
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
+        self.stats_rect = pygame.Rect(283, 600, 235, 146)
         music_on = True
         self.rect =[]
         for i in range(10):
@@ -95,10 +92,8 @@ class TicTacToe(Game):
                     if self.win() == 0:
                         self.turn()
                     else:
-                        if self.replay_rect.collidepoint(pygame.mouse.get_pos()):
-                            return "replay"
-                        if self.home_rect.collidepoint(pygame.mouse.get_pos()):
-                            return "home"
+                        if self.stats_rect.collidepoint(pygame.mouse.get_pos()):
+                            return self.win()
                         
             self.screen.blit(self.bg, (0,0))
 
@@ -118,7 +113,6 @@ class TicTacToe(Game):
                     self.screen.blit(self.x_win, (199,140))
                 else:
                     self.screen.blit(self.o_win, (199,140))
-                self.screen.blit(self.replay, (347,470))
-                self.screen.blit(self.home, (407,470))
+                self.screen.blit(self.stats, (283,600))
             pygame.display.update()
 
