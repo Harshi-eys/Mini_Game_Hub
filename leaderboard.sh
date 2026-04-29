@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Asks for the criteria of sorting leaderboard using dialog command
 criteria=$(dialog --stdout --menu "Choose Sorting option:" 15 40 4 \
 1 "Name" \
 2 "Game" \
@@ -23,7 +24,7 @@ fi
 awk -F, '
 BEGIN{
     printf "\n\n                               Leaderboard\n\n"
-    printf "%-15s\t%-15s\t%-10s\t%-10s\t%-20s\n", "Player", "Game", "Wins", "Losses", "Win/Losses Ratio"
+    printf "%-15s\t%-15s\t%-10s\t%-10s\t%-20s\n", "Player", "Game", "Wins", "Losses", "Win/Losses Ratio" #Heading of the leaderboard
     printf "---------------------------------------------------------------------------------\n"
 }'
 
@@ -37,10 +38,10 @@ BEGIN{
     los = $2
     game = $3
 
-    wins[win,game]++
-    loss[los,game]++
-    pla[win","game] = 1
-    pla[los","game] = 1
+    wins[win,game]++ #Stores the number of times a particular player has won per game
+    loss[los,game]++ #Stores the number of times a particular player has lost per game
+    pla[win","game] = 1 #Stores the names of player who has won a particular game
+    pla[los","game] = 1 #Stores the names of player has lost a particular game
 }
 END{
     for (i in pla){
