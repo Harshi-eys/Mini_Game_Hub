@@ -119,13 +119,6 @@ class Othello(Game):
         if np.all(self.board != 0) or (not self.any_valid(1) and not self.any_valid(2)):
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
-            # if self.event.type == pygame.MOUSEBUTTONDOWN:
-            #     #replay
-            #     if self.replay.collidepoint(pygame.mouse.get_pos()):
-            #         return "replay"
-            #         #home
-            #     if self.home.collidepoint(pygame.mouse.get_pos()):
-            #         return "home"\
             
             if num_bla > num_whi:
                 self.screen.blit(self.black_win, (173,140))
@@ -187,8 +180,6 @@ class Othello(Game):
         self.black_win = pygame.transform.scale(self.black_win, (450,484))
         self.white_win = pygame.image.load(str("Ref_Images/white_win.png")).convert_alpha()
         self.white_win = pygame.transform.scale(self.white_win, (450,484)) 
-        # self.draw = pygame.image.load(str("Ref_Images/draw.png")).convert_alpha()
-        # selfdraw = pygame.transform.scale(self.draw, (535,400))
         self.stats = pygame.image.load(str("Ref_Images/stats.png")).convert_alpha()
         self.stats = pygame.transform.scale(self.stats, (290, 180))
         self.banner = pygame.image.load(str("Ref_Images/banner3.png")).convert_alpha()

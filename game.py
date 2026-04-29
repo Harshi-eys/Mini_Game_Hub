@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import csv
 from datetime import date
+import matplotlib.pyplot as plt
 
 usr1 = sys.argv[1]
 usr2 = sys.argv[2]
@@ -123,7 +124,30 @@ def post_game():
         today = date.today()
         writer.writerow([win, loss, match, today])
     subprocess.run(["sh", "leaderboard.sh"])
+    with open("history.csv", 'r') as f:
+        history = list(csv.DictReader(f))
+    games = {}
+    play_win = {}
+    for i in history:
+        if i['Game'] not in games:
+            games.update({i['Game'] : 1})
+        else : games[i['Game']] += 1
+
+        if i['Winner'] not in play_win:
+            play_win.update({i['Winner'] : 1})
+        else : play_win[i['Winner']] += 1
+
+    plt.subplot(1, 2, 1)
+    plt.bar(play_win.keys(), play_win.values(), width=0.8, color = "#9C4905")
+    plt.xlabel("Player Names")
+    plt.ylabel("Winning frequency")
+    plt.subplot(1, 2, 2)
+    plt.pie(games.values(), labels = games.keys())
+    plt.tight_layout()
+    plt.show() 
+
     main()
+
 
 if __name__ == "__main__":
     main()
