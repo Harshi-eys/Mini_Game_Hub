@@ -126,6 +126,7 @@ class Othello(Game):
         if np.all(self.board != 0) or (not self.any_valid(1) and not self.any_valid(2)):
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
+
             if num_bla > num_whi:
                 self.screen.blit(self.black_win, (173,140))
                 #displaying stats UI and counts for black coin
@@ -228,7 +229,7 @@ class Othello(Game):
                     #gameplay or return to stats
                     if self.win() == -1:
                         self.turn()
-                    elif self.win() ==1 or self.win() ==2 or self.win() ==0:
+                    if self.win() ==1 or self.win() ==2 or self.win() ==0:
                         if self.stats_rect.collidepoint(pygame.mouse.get_pos()):
                             return self.win()
            
