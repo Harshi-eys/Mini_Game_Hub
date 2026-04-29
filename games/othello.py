@@ -119,14 +119,46 @@ class Othello(Game):
         if np.all(self.board != 0) or (not self.any_valid(1) and not self.any_valid(2)):
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
+            # if self.event.type == pygame.MOUSEBUTTONDOWN:
+            #     #replay
+            #     if self.replay.collidepoint(pygame.mouse.get_pos()):
+            #         return "replay"
+            #         #home
+            #     if self.home.collidepoint(pygame.mouse.get_pos()):
+            #         return "home"\
+            
             if num_bla > num_whi:
-                self.screen.blit(self.black_win, (173,150))
+                self.screen.blit(self.black_win, (173,140))
+                self.screen.blit(self.replay, (345,470))
+                self.screen.blit(self.home, (405,470))
+                self.screen.blit(self.banner, (242,476))
+                text_1 = f"= {num_bla}"
+                text_2 = f"= {num_whi}"   
+                text_surface1 = self.font.render(text_1, True, (0, 0, 0))
+                text_surface2= self.font.render(text_2, True, (0, 0, 0))
+                self.screen.blit(text_surface1, (391, 580))                
+                self.screen.blit(text_surface2, (391, 620))
+                self.screen.blit(self.black_small, (331,570))
+                self.screen.blit(self.white_small, (331,615))
                 return 1
             elif num_bla < num_whi:
-                self.screen.blit(self.white_win, (173,150))
+                self.screen.blit(self.white_win, (173,140))
+                self.screen.blit(self.replay, (345,470))
+                self.screen.blit(self.home, (405,470))
+                self.screen.blit(self.banner, (242,476))
+                text_2 = f"= {num_bla}"
+                text_1 = f"= {num_whi}"   
+                text_surface1 = self.font.render(text_1, True, (0, 0, 0))
+                text_surface2= self.font.render(text_2, True, (0, 0, 0))
+                self.screen.blit(text_surface1, (391, 580))                
+                self.screen.blit(text_surface2, (391, 620))
+                self.screen.blit(self.white_small, (331,570))
+                self.screen.blit(self.black_small, (331,615))
                 return 2
             else:
                 # screen.blit(draw, (300,400))
+                self.screen.blit(self.replay, (345,470))
+                self.screen.blit(self.home, (405,470))
                 return 0
         return -1
     
@@ -144,8 +176,10 @@ class Othello(Game):
         self.bg = pygame.transform.scale(self.bg, self.screen.get_size())
         self.black = pygame.image.load(str("Ref_Images/Oth_Black.png")).convert_alpha()
         self.black = pygame.transform.scale(self.black, (60,60))
+        self.black_small = pygame.transform.scale(self.black, (45,45))
         self.white = pygame.image.load(str("Ref_Images/Oth_White.png")).convert_alpha()
         self.white = pygame.transform.scale(self.white, (60,60))
+        self.white_small = pygame.transform.scale(self.white, (45,45))
         self.bg1 = pygame.image.load(str("Ref_Images/Oth_cutout.png")).convert_alpha()
         self.bg1 = pygame.transform.scale(self.bg1, (535,400))
         self.black_turn = pygame.image.load(str("Ref_Images/black_turn.png")).convert_alpha()
@@ -156,9 +190,23 @@ class Othello(Game):
         self.black_win = pygame.transform.scale(self.black_win, (450,484))
         self.white_win = pygame.image.load(str("Ref_Images/white_win.png")).convert_alpha()
         self.white_win = pygame.transform.scale(self.white_win, (450,484)) 
-        # draw = pygame.image.load(str(Hub / "Ref_Images/draw.png")).convert_alpha()
-        # draw = pygame.transform.scale(draw, (535,400))
+        # self.draw = pygame.image.load(str("Ref_Images/draw.png")).convert_alpha()
+        # selfdraw = pygame.transform.scale(self.draw, (535,400))
+        self.replay = pygame.image.load(str("Ref_Images/replay.png")).convert_alpha()
+        self.replay = pygame.transform.scale(self.replay, (371, 250))
+        self.home = pygame.image.load(str("Ref_Images/home.png")).convert_alpha()
+        self.home = pygame.transform.scale(self.home, (371, 250))
+        self.banner = pygame.image.load(str("Ref_Images/banner3.png")).convert_alpha()
+        self.banner = pygame.transform.scale(self.banner, (330, 320))
+        self.replay_rect = pygame.Rect(345, 470, 70, 70)
+        self.home_rect = pygame.Rect(405, 470, 70, 70)
+        self.music = pygame.image.load(str("Ref_Images/music.png")).convert_alpha()
+        self.music = pygame.transform.scale(self.music, (500, 340))
+        self.off_music = pygame.image.load(str("Ref_Images/off_music.png")).convert_alpha()
+        self.off_music = pygame.transform.scale(self.off_music, (500, 340))
+        self.music_rect = pygame.Rect(723, -0.5, 70, 70)
         self.rect = []
+        music_on = True
         for i in range(8):
             for j in range(8):
                 self.rect.append(pygame.Rect(120 + 70.75*j, 145 + 65.5*i, 64.75, 61))
@@ -171,8 +219,23 @@ class Othello(Game):
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.music_rect.collidepoint(pygame.mouse.get_pos()):
+                        if music_on == True:
+                            pygame.mixer.music.pause()  
+                            music_on = False
+                        else:
+                            pygame.mixer.music.unpause()
+                            music_on = True
                     if self.win() == -1:
-                        self.turn()                      
+                        self.turn()
+                    elif self.win() ==1 or self.win() ==2 or self.win() ==0:
+                        #replay
+                        if self.replay_rect.collidepoint(pygame.mouse.get_pos()):
+                            return "replay"
+                        #home
+                        if self.home_rect.collidepoint(pygame.mouse.get_pos()):
+                            return "home"
+                                              
             
             self.screen.blit(self.bg, (0,0))
             for i in range(64):
@@ -182,5 +245,19 @@ class Othello(Game):
                     self.screen.blit(self.white, self.rect[i])
             self.screen.blit(self.bg1, (275,-40))
             self.draw_turn_text()
+            if music_on:
+                self.screen.blit(self.music, (725, 0))
+            else:
+                self.screen.blit(self.off_music, (727, 1.5))
+            # self.screen.blit(self.black_win, (173,80))
+            # self.screen.blit(self.banner, (240,476))
+            # text_1 = f"= {4}"
+            # text_2 = f"= {5}"   
+            # text_surface1 = self.font.render(text_1, True, (0, 0, 0))
+            # text_surface2= self.font.render(text_2, True, (0, 0, 0))
+            # self.screen.blit(text_surface1, (390, 580))                
+            # self.screen.blit(text_surface2, (390, 620))
+            # self.screen.blit(self.black_small, (330,570))
+            # self.screen.blit(self.white_small, (330,615))
             pygame.display.update()
             
