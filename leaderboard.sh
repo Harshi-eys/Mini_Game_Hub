@@ -1,8 +1,30 @@
+#!/bin/bash
+
+criteria=$(dialog --stdout --menu "Choose Sorting option:" 15 40 4 \
+1 "Name" \
+2 "Game" \
+3 "Wins" \
+4 "Loss" \
+5 "Win-loss ratio" \
+)
+
+if [[ "$criteria" == "2" ]]; then
+    sortby="sort -t$'\t' -k2,2"
+elif [[ "$criteria" == "3" ]]; then
+    sortby="sort -t$'\t' -k3,3nr"
+elif [[ "$criteria" == "4" ]]; then
+    sortby="sort -t$'\t' -k4,4nr"
+elif [[ "$criteria" == "5" ]]; then
+    sortby="sort -t$'\t' -k5,5nr"
+else
+    sortby="sort -t$'\t' -k1,1"
+fi
+
 awk -F, '
 BEGIN{
-    printf "\n                             Leaderboard\n"
-    printf "%-20s %-15s %-10s %-10s %-20s\n", "Player", "Game", "Wins", "Losses", "Win/Losses Ratio"
-    printf "----------------------------------------------------------------------------\n"
+    printf "\n\n                               Leaderboard\n\n"
+    printf "%-15s\t%-15s\t%-10s\t%-10s\t%-20s\n", "Player", "Game", "Wins", "Losses", "Win/Losses Ratio"
+    printf "---------------------------------------------------------------------------------\n"
 }'
 
 awk -F, '
@@ -25,7 +47,7 @@ END{
         split(i, arr, ",")
         player = arr[1]
         game = arr[2]
-        printf "%-20s %-15s %-10d %-10d %-20.2f\n", player, game, wins[player,game], loss[player,game], (loss[player,game]==0? wins[player,game] : wins[player,game]/loss[player,game])
+        printf "%-15s\t%-15s\t%-10d\t%-10d\t%-20.2f\n", player, game, wins[player,game], loss[player,game], (loss[player,game]==0? wins[player,game] : wins[player,game]/loss[player,game])
     }
-}' history.csv | sort 
+}' history.csv | eval "$sortby"
 printf "\n"
