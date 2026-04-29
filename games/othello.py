@@ -20,14 +20,15 @@ class Othello(Game):
                 r = i//8
                 c = i%8
                 #check if the cell is empty and the move results in a flip
+                #if next player has no moves, skip their turn
                 if self.board[r][c] == 0:
+                    if not self.any_valid(self.player):
+                            self.player = 3 - self.player
                     if self.valid_flip(r, c, self.player, False):
                         self.board[r][c] = self.player
                         self.valid_flip(r, c, self.player, True) #flips
                         self.player = 3 - self.player #switch turns
-                        #if next player has no moves, skip their turn
-                        if not self.any_valid(self.player):
-                            self.player = 3 - self.player
+                        
     
     def valid_flip(self, r, c, p, flip):
         valid = False
