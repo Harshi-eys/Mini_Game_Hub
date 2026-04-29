@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import subprocess
 import csv
+from datetime import date
 
 usr1 = sys.argv[1]
 usr2 = sys.argv[2]
@@ -70,26 +71,31 @@ def main():
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if rect1.collidepoint(pygame.mouse.get_pos()):
-                    from games.tictactoe import TicTacToe
-                    game = TicTacToe()
-                    game.run()
-                    #subprocess.run(["sh", "leaderboard.sh"])
-                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    global winner, match
+                    if rect1.collidepoint(pygame.mouse.get_pos()):
+                        from games.tictactoe import TicTacToe
+                        game = TicTacToe()
+                        match = "Tic Tac Toe"
+                        winner = game.run()
+                        post_game()
+                        return
 
-                elif rect2.collidepoint(pygame.mouse.get_pos()):
-                    from games.othello import Othello
-                    game = Othello()
-                    game.run()
-                    #subprocess.run(["sh", "leaderboard.sh"])
-                    sys.exit()
+                    elif rect2.collidepoint(pygame.mouse.get_pos()):
+                        from games.othello import Othello
+                        game = Othello()
+                        match = "Othello"
+                        winner = game.run()
+                        post_game()
+                        return
                     
-                elif rect3.collidepoint(pygame.mouse.get_pos()):
-                    from games.connect4 import Connect4
-                    game = Connect4()
-                    game.run()
-                    #subprocess.run(["sh", "leaderboard.sh"])
-                    sys.exit()
+                    elif rect3.collidepoint(pygame.mouse.get_pos()):
+                        from games.connect4 import Connect4
+                        game = Connect4()
+                        match = "Connect4"
+                        winner = game.run()
+                        post_game()
+                        return
         
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if music_rect.collidepoint(pygame.mouse.get_pos()):
@@ -103,6 +109,21 @@ def main():
         if music_rect.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, "#FF9900", (723, -0.5, 70, 70), width=2, border_radius= 10)
         pygame.display.update()
+
+def post_game():
+    global win, loss, today
+    if winner == 1: 
+        win = usr1 
+        loss = usr2
+    elif winner == 2 : 
+        win = usr2
+        loss = usr1
+    with open("history.csv", 'a') as f:
+        writer = csv.writer(f)
+        today = date.today()
+        writer.writerow([win, loss, match, today])
+    subprocess.run(["sh", "leaderboard.sh"])
+    main()
 
 if __name__ == "__main__":
     main()
