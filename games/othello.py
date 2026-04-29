@@ -4,13 +4,14 @@ import numpy as np
 from game import Game
 
 class Othello(Game):
+    # Initialize 8x8 board and set starting pieces in the center
     def __init__(self):
         super().__init__()
         self.board = np.zeros((8,8), dtype = int)
-        self.board[3][3] = 2
-        self.board[3][4] = 1
-        self.board[4][3] = 1
-        self.board[4][4] = 2
+        self.board[3][3] = 2 #white
+        self.board[3][4] = 1 #black
+        self.board[4][3] = 1 #black
+        self.board[4][4] = 2 #white
         self.font = pygame.font.SysFont("Arial", 30)
 
     def turn(self):
@@ -18,18 +19,21 @@ class Othello(Game):
             if self.rect[i].collidepoint(pygame.mouse.get_pos()):
                 r = i//8
                 c = i%8
+                #check if the cell is empty and the move results in a flip
                 if self.board[r][c] == 0:
                     if self.valid_flip(r, c, self.player, False):
                         self.board[r][c] = self.player
-                        self.valid_flip(r, c, self.player, True)
-                        self.player = 3 - self.player
-
+                        self.valid_flip(r, c, self.player, True) #flips
+                        self.player = 3 - self.player #switch turns
+                        #if next player has no moves, skip their turn
                         if not self.any_valid(self.player):
                             self.player = 3 - self.player
     
     def valid_flip(self, r, c, p, flip):
         valid = False
         opp = 3 - p
+        #checks and then flips in all 8 directions (horizontal, vertical, diagonal)
+        #vertical-down check
         if r+1 < 8 and self.board[r+1][c] == opp:
             for i in range(r+2, 8):
                 if self.board[i][c] == 0: break
@@ -39,6 +43,7 @@ class Othello(Game):
                             self.board[j][c] = p
                     valid = True
                     break
+        #manual checks for vertical-up, horizontal-right, and horizontal-left
         if r-1 >= 0 and self.board[r-1][c] == opp:
             for i in range(r-2, -1, -1):
                 if self.board[i][c] == 0: break
@@ -67,7 +72,7 @@ class Othello(Game):
                             self.board[r][j] = p
                     valid = True
                     break
-                
+        #diagonal checks: down-right, up-left, down-left, up-right      
         if r+1 < 8 and c+1 < 8 and self.board[r+1][c+1] == opp:
             for i in range(2, min(8-r, 8-c)):
                 if self.board[r+i][c+i] == 0: break
@@ -108,6 +113,7 @@ class Othello(Game):
         return valid
     
     def any_valid(self, p):
+        #checks if the given player has any valid moves left on the board.
         for i in range(8):
             for j in range(8):
                 if self.board[i][j] == 0:
@@ -116,19 +122,13 @@ class Othello(Game):
         return False
 
     def win(self):
+        #determines if the game is over and calculates the winner based on coin count.
         if np.all(self.board != 0) or (not self.any_valid(1) and not self.any_valid(2)):
             num_bla = np.sum(self.board == 1)
             num_whi = np.sum(self.board == 2)
-            # if self.event.type == pygame.MOUSEBUTTONDOWN:
-            #     #replay
-            #     if self.replay.collidepoint(pygame.mouse.get_pos()):
-            #         return "replay"
-            #         #home
-            #     if self.home.collidepoint(pygame.mouse.get_pos()):
-            #         return "home"\
-            
             if num_bla > num_whi:
                 self.screen.blit(self.black_win, (173,140))
+                #displaying stats UI and counts for black coin
                 self.screen.blit(self.stats, (5, 5))
                 self.screen.blit(self.banner, (242,476))
                 text_1 = f"= {num_bla}"
@@ -142,6 +142,7 @@ class Othello(Game):
                 return 1
             elif num_bla < num_whi:
                 self.screen.blit(self.white_win, (173,140))
+                #displaying stats UI and counts for white coin
                 self.screen.blit(self.stats, (5, 5))
                 self.screen.blit(self.banner, (242,476))
                 text_2 = f"= {num_bla}"
@@ -154,12 +155,12 @@ class Othello(Game):
                 self.screen.blit(self.black_small, (331,615))
                 return 2
             else:
-                # screen.blit(draw, (300,400))
                 self.screen.blit(self.stats, (5, 5))
-                return 0
+                return 0 #draw
         return -1
     
     def draw_turn_text(self):
+        #displays whose turn it is in the corner of the screen.
         if self.win() == -1:
             if self.player == 1 :
                 self.screen.blit(self.black_turn, (-5,-5))
@@ -167,8 +168,10 @@ class Othello(Game):
                 self.screen.blit(self.white_turn, (-5,-6))
 
     def run(self):
+        #main game loop and variables management.
         self.initialisation("Othello")
         self.font = pygame.font.SysFont("palatinolinotype", 40)
+        #load and scale images
         self.bg = pygame.image.load(str("Ref_Images/Oth_bg.png")).convert()
         self.bg = pygame.transform.scale(self.bg, self.screen.get_size())
         self.black = pygame.image.load(str("Ref_Images/Oth_Black.png")).convert_alpha()
@@ -187,8 +190,6 @@ class Othello(Game):
         self.black_win = pygame.transform.scale(self.black_win, (450,484))
         self.white_win = pygame.image.load(str("Ref_Images/white_win.png")).convert_alpha()
         self.white_win = pygame.transform.scale(self.white_win, (450,484)) 
-        # self.draw = pygame.image.load(str("Ref_Images/draw.png")).convert_alpha()
-        # selfdraw = pygame.transform.scale(self.draw, (535,400))
         self.stats = pygame.image.load(str("Ref_Images/stats.png")).convert_alpha()
         self.stats = pygame.transform.scale(self.stats, (290, 180))
         self.banner = pygame.image.load(str("Ref_Images/banner3.png")).convert_alpha()
@@ -201,6 +202,7 @@ class Othello(Game):
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
         self.stats_rect = pygame.Rect(5, 5, 235, 146)
+        #generate board grid rectangles
         self.rect = []
         music_on = True
         for i in range(8):
@@ -215,6 +217,7 @@ class Othello(Game):
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    #toggle music
                     if self.music_rect.collidepoint(pygame.mouse.get_pos()):
                         if music_on == True:
                             pygame.mixer.music.pause()  
@@ -222,6 +225,7 @@ class Othello(Game):
                         else:
                             pygame.mixer.music.unpause()
                             music_on = True
+                    #gameplay or return to stats
                     if self.win() == -1:
                         self.turn()
                     elif self.win() ==1 or self.win() ==2 or self.win() ==0:
@@ -229,11 +233,13 @@ class Othello(Game):
                             return self.win()
            
             self.screen.blit(self.bg, (0,0))
+            #displaying board state
             for i in range(64):
                 if self.board[i//8][i%8] == 1:
                     self.screen.blit(self.black, self.rect[i])
                 elif self.board[i//8][i%8] == 2:
                     self.screen.blit(self.white, self.rect[i])
+            #some more interface images
             self.screen.blit(self.bg1, (275,-40))
             self.draw_turn_text()
             if music_on:
