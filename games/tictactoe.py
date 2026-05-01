@@ -2,6 +2,7 @@ import pygame
 import sys
 import numpy as np
 from game import Game
+import random
 
 class TicTacToe(Game):
     def __init__(self):
@@ -52,6 +53,15 @@ class TicTacToe(Game):
             text_surface = self.font.render(text_content, True, (0, 0, 0))
             self.screen.blit(text_surface, (334, 16))    
 
+    def ghost_move(self):
+        if self.n_move%3 ==0 and self.n_move!=0:
+            cell = random.randint(0, 100)
+            play = random.randint(1, 3)
+            r = cell//10
+            c = cell%10
+            self.board[r][c] = play
+        
+
     def run(self):
         self.initialisation("Tic Tac Toe")
         # specified font used on banner
@@ -75,10 +85,14 @@ class TicTacToe(Game):
         self.music = pygame.transform.scale(self.music, (500, 340))
         self.off_music = pygame.image.load(str("Ref_Images/off_music.png")).convert_alpha()
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
+        self.home = pygame.image.load(str("Ref_Images/home.png"))
+        self.home = pygame.transform.scale(self.home, (500, 340))
+        self.home_rect = pygame.Rect(650, -0.5, 70, 70)
         # define rectangles for UI click areas
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
         self.stats_rect = pygame.Rect(283, 600, 235, 146)
         music_on = True
+        self.n_move = 0
         # generate the 10x10 grid of rectangles
         self.rect =[]
         for i in range(10):
@@ -104,6 +118,11 @@ class TicTacToe(Game):
                             music_on = True
                     if self.win() == 0:
                         self.turn()
+                        self.n_move += 1  
+                        self.ghost_move()
+                        
+                    if self.home_rect.collidepoint(pygame.mouse.get_pos()):
+                        return None
                     else: # shows the statistics when clicked
                         if self.stats_rect.collidepoint(pygame.mouse.get_pos()):
                             return self.win()
@@ -123,6 +142,7 @@ class TicTacToe(Game):
             else:
                 self.screen.blit(self.off_music, (727, 1.5))
             #display of winner banner
+            self.screen.blit(self.home, (650,1.5))
             if self.win() !=0 :
                 if self.player == 2 :       
                     self.screen.blit(self.x_win, (199,140))

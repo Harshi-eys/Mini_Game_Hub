@@ -137,6 +137,8 @@ def post_game():
         win, loss = usr1, usr2
     elif winner == 2: 
         win, loss = usr2, usr1
+    elif winner == None:
+        main()
     
     # Append match result to history file
     with open("history.csv", 'a', newline='') as f:

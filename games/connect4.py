@@ -114,6 +114,9 @@ class Connect4(Game) :
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
         self.stats_rect = pygame.Rect(293, 550, 235, 146)
+        self.home = pygame.image.load(str("Ref_Images/home.png"))
+        self.home = pygame.transform.scale(self.home, (500, 340))
+        self.home_rect = pygame.Rect(650, -0.5, 70, 70)
         #create rectangles for column selection
         self.rect = []
         music_on = True
@@ -150,6 +153,8 @@ class Connect4(Game) :
                             music_on = True
                     if self.win() == 0 :
                         self.turn()
+                    if self.home_rect.collidepoint(pygame.mouse.get_pos()):
+                        return None
 
             #Draw background and current animated coin
             self.screen.blit(self.bgi, (0,0))
@@ -184,7 +189,8 @@ class Connect4(Game) :
                 else:
                     self.screen.blit(self.blue_win, (215,140))
                 self.screen.blit(self.stats, (293,550))
-
+            
+            self.screen.blit(self.home, (650,1.5))
             pygame.display.update()
             #setting 60 fps
             clock.tick(60)

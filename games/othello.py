@@ -204,6 +204,9 @@ class Othello(Game):
         self.off_music = pygame.transform.scale(self.off_music, (500, 340))
         self.music_rect = pygame.Rect(723, -0.5, 70, 70)
         self.stats_rect = pygame.Rect(5, 5, 235, 146)
+        self.home = pygame.image.load(str("Ref_Images/home.png"))
+        self.home = pygame.transform.scale(self.home, (500, 340))
+        self.home_rect = pygame.Rect(650, -0.5, 70, 70)
         #generate board grid rectangles
         self.rect = []
         music_on = True
@@ -227,6 +230,8 @@ class Othello(Game):
                         else:
                             pygame.mixer.music.unpause()
                             music_on = True
+                    if self.home_rect.collidepoint(pygame.mouse.get_pos()):
+                        return None
                     #gameplay or return to stats
                     if self.win() == -1:
                         self.turn()
@@ -248,5 +253,6 @@ class Othello(Game):
                 self.screen.blit(self.music, (725, 0))
             else:
                 self.screen.blit(self.off_music, (727, 1.5))
+            self.screen.blit(self.home, (650,1.5))
             pygame.display.update()
             
